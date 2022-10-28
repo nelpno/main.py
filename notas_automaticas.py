@@ -72,7 +72,7 @@ def transforme_img_str(arquivo):
     img = pytesseract.image_to_string(arquivo, lang="eng", config=r'--oem 3 --psm 7 -c tessedit_char_whitelist=0123456789,')
     return img
 
-# Abrir o programa no início, programa fechado.
+# # Abrir o programa no início, programa fechado.
 # if achar_img_tela('icone_prosol_aberto.png') is None:
 #     imagem_clicar('icone_prosol.png')
 #     while achar_img_tela('acessar_prosol.png') is None:
@@ -97,10 +97,10 @@ def transforme_img_str(arquivo):
 #     time.sleep(.25)
 #
 # imagem_clicar('novo_pedido.png')
-#
-# # inserir produtos e preço
-# i = 0
-#
+
+# inserir produtos e preço
+i = 0
+
 # lista de clientes puxada pelo Excel
 i = 0
 # p = 1 caso queira mais de uma nota por vez
@@ -260,19 +260,21 @@ boleto_lista = df['Boleto'].tolist()
 #     print(2)
 #     time.sleep(.25)
 
+# Print da nota e pega de Dados
 img = ImageGrab.grab((899, 381, 1653, 820))
-# img.show()
 
 valor_img = img.crop((694, 416, 737, 432))
 valor_img_conv = valor_img.convert('1')
 data_img = img.crop((24, 322, 89, 335))
 numero_nfe_img = img.crop((320, 75, 368, 89))
+nome_img = img.crop((9, 210, 92, 230))
 
+nome = pytesseract.image_to_string(nome_img, lang="eng", config=r'--oem 3 --psm 7')
 valor = transforme_img_str(valor_img_conv)
 data = transforme_img_str(data_img)
 numero_nfe = transforme_img_str(numero_nfe_img)
 
-if math.isnan(boleto_lista[0]):
+if math.isnan(boleto_lista[0]) is not True:
     if achar_img_tela('logo_caixa_aberto.png') is None:
         imagem_clicar('logo_caixa.png')
         imagem_clicar('logo_caixa.png')
@@ -304,9 +306,13 @@ if math.isnan(boleto_lista[0]):
     escreve(data)
     pyautogui.doubleClick('duplo_clique_nfe.png')
     apertar('backspace')
-    escreve('NFE {} '.format(numero_nfe))
+    escreve('NFE {}'.format(numero_nfe))
     imagem_clicar('campo_valor_boleto.png')
     escreve(valor)
+    imagem_clicar('clicar_sacado.png')
+    press_junto('alt', 'n')
+    escreve(nome)
+    press_junto('alt', 'c')
 
 # pyautogui.doubleClick(imagem_clicar('icone_impressora.png'))
 #
